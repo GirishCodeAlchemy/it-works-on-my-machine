@@ -42,3 +42,14 @@
 //   "postCreateCommand": "docker exec -u vscode golang-dev go get -u github.com/go-delve/delve/cmd/dlv"
 // }
 
+
+
+// ######################################### Nodejs #########################################
+
+// {
+//   "name": "Basic Node.js",
+//   "build": { "dockerfile": "NodejsDockerfile" },
+//   "remoteUser": "node"
+// }
+
+
