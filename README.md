@@ -1,5 +1,7 @@
 # it-works-on-my-machine
 
+![](cover.jpeg)
+
 This repository demonstrates a basic setup for development containers using Python, Node.js, and Golang. Each language has a "Hello, World!" example that you can run within the respective dev containers.
 
 ## Prerequisites
