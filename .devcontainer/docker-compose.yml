@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+  python-dev:
+    image: python:3.9
+    volumes:
+      - .:/workspace
+    command: /bin/bash
+    ports:
+      - "5000:5000"
+
+  postgres-db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydatabase
+    ports:
+      - "5432:5432"
+
+  golang-dev:
+    image: golang:latest
+    volumes:
+      - .:/workspace
+    command: /bin/bash
