@@ -1,0 +1,17 @@
+{
+  "name": "Golang Dev Container",
+  "dockerFile": "Dockerfile.golang",
+  "service": "golang-dev",
+  "settings": {
+    "terminal.integrated.shell.linux": "/bin/bash"
+  },
+  "extensions": [
+    "golang.go"
+  ],
+  "remoteUser": "vscode",
+  "workspaceMount": "source=/path/to/your/repo,target=/workspace,type=bind,consistency=cached",
+  "workspaceFolder": "/workspace",
+  "postCreateCommand": "docker exec -u vscode golang-dev go get -u github.com/go-delve/delve/cmd/dlv"
+}
+
+

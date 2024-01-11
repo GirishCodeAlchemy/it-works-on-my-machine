@@ -1,0 +1,16 @@
+{
+  "name": "Multi-Container Dev Environment",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "python-dev",
+  "settings": {
+    "terminal.integrated.shell.linux": "/bin/bash"
+  },
+  "extensions": [
+    "ms-python.python"
+  ],
+ "remoteUser": "vscode",
+  "workspaceMount": "source=/path/to/your/repo,target=/workspace,type=bind,consistency=cached",
+  "workspaceFolder": "/workspace",
+  "forwardPorts": [5000],
+  "postCreateCommand": "docker exec -u root golang-dev go get -u github.com/go-delve/delve/cmd/dlv"
+}

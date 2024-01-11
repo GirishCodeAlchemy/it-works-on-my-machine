@@ -28,7 +28,7 @@
 
 // {
 //   "name": "Golang Dev Container",
-//   "dockerFile": "Dockerfile",
+//   "dockerFile": "Dockerfile.golang",
 //   "service": "golang-dev",
 //   "settings": {
 //     "terminal.integrated.shell.linux": "/bin/bash"
@@ -48,7 +48,7 @@
 
 // {
 //   "name": "Basic Node.js",
-//   "build": { "dockerfile": "NodejsDockerfile" },
+//   "build": { "dockerfile": "Dockerfile.nodejs" },
 //   "remoteUser": "node"
 // }
 
