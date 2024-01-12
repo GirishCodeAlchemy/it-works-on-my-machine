@@ -1,0 +1,33 @@
+FROM amazonlinux:2
+
+RUN yum install yum-utils -y
+COPY docker/config/girishcodealchemy.repo /etc/yum.repos.d/girishcodealchemy.repo
+RUN yum install --disableplugin=fastestmirror --enablerepo=girishcodealchemy -y nginx-all-modules
+RUN ln -sf /dev/stdout /var/log/nginx/access.log
+RUN ln -sf /dev/stderr /var/log/nginx/error.log
+COPY --chown=nginx docker/config/nginx.conf /etc/nginx/nginx.conf
+
+# stop creating new ssl certs because we don't want to have to update our local machine trusted certs all the time
+RUN mkdir /pki/
+#RUN openssl req -new -nodes -x509 -subj "/C=US/ST=California/L=Woodside/O=IT/CN=local.girishcodealchemy.io" -days 3650 -keyout /pki/io.girishcodealchemy.local.key -out /pki/io.girishcodealchemy.local.pem -extensions v3_ca
+COPY --chown=nginx docker/config/io.girishcodealchemy.local.* /pki/
+
+#######################################################################################
+# PLEASE READ THIS BECAUSE IT'S GONNA BITE YOU in 2.5 years!!!
+#######################################################################################
+# The latest io.girishcodealchemy.local.* ssl certs in this folder will expire on Monday, January 5, 2026.
+# To create new ssl certs, please run these commands IN WINDOWS
+# mkdir %HOMEPATH%\ssl_certs\bin
+# curl -L -o %HOMEPATH%\ssl_certs\bin\mkcert.exe https://github.com/FiloSottile/mkcert/releases/download/v1.4.3/mkcert-v1.4.3-windows-amd64.exe
+# %HOMEPATH%\ssl_certs\bin\mkcert.exe -cert-file "%HOMEPATH%\ssl_certs\local.girishcodealchemy.io.crt" -key-file "%HOMEPATH%\ssl_certs\local.girishcodealchemy.io.key" local.girishcodealchemy.io
+# copy %HOMEPATH%\ssl_certs\local.girishcodealchemy.io.key %HOMEPATH%\ssl_certs\io.girishcodealchemy.local.key
+# copy %HOMEPATH%\ssl_certs\local.girishcodealchemy.io.crt %HOMEPATH%\ssl_certs\io.girishcodealchemy.local.pem
+# rename %HOMEPATH%\ssl_certs\local.girishcodealchemy.io.crt %HOMEPATH%\ssl_certs\io.girishcodealchemy.local.crt
+# then copy the 3 io.girishcodealchemy.local.* files to docker/config and commit them to the github repository.
+# rinse and repeat every 2-3 years.
+#######################################################################################
+# To get rid of any local.girishcodealchemy.io self-signed certificate errors, double-click %HOMEPATH%\ssl_certs\local.girishcodealchemy.io.crt and install it into your “Trusted Root Certification Authorities” in Windows.
+# That's for Windows users. If you know how to do this in Linux or MacOS please add to these instructions.
+#######################################################################################
+
+CMD ["nginx", "-g", "daemon off;"]

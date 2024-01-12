@@ -1,0 +1,36 @@
+FROM girishcodealchemy-base-image:latest
+
+USER girishcodealchemy
+
+ENV PIP_INDEX_URL=${PIP_INDEX_URL}
+ENV pip_py3=${pip_py3}
+ENV ZZ9_NOT_COMPILED_VARDEFS=true
+
+ADD --chown=girishcodealchemy . /code/
+WORKDIR /code/
+
+# Order is important here!
+RUN ${pip_py3} install -e ./core[testing]
+
+
+
+USER root
+RUN mkdir -p /root/.config/fish/
+ADD docker/config/config.fish /root/.config/fish/
+RUN yum install -y fish git curl which top ps man vim time sudo \
+    && yum groupinstall -y "Development Tools"
+RUN /sbin/ldconfig /usr/local/lib64/spss/
+ENV SHELL=/usr/bin/fish
+RUN python -m venv /usr/local/lib64/pre-commit \
+    && /usr/local/lib64/pre-commit/bin/pip install pre-commit \
+    && ln -s /usr/local/lib64/pre-commit/bin/pre-commit /usr/bin/
+RUN python -m venv /usr/local/lib64/black \
+    && PIP_INDEX_URL='' /usr/local/lib64/black/bin/pip install black==19.10b0 \
+    && ln -s /usr/local/lib64/black/bin/black /usr/bin/
+RUN git init . \
+    && git config --global --add safe.directory /code \
+    && git status
+RUN mkdir -p /root/.local/share/fish/ \
+    && touch /code/fish_history \
+    && rm /root/.local/share/fish/fish_history  || true \
+    && ln -s /code/fish_history /root/.local/share/fish/fish_history

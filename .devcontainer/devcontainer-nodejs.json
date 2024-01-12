@@ -1,7 +1,0 @@
-{
-  "name": "Basic Node.js",
-  "build": { "dockerfile": "Dockerfile.nodejs" },
-  "remoteUser": "node"
-}
-
-

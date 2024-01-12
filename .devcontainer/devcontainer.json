@@ -1,74 +1,97 @@
-
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/python
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.209.6/containers/docker-existing-docker-compose
+// If you want to run as a non-root user in the container, see .devcontainer/docker-compose.yml.
 {
-	"name": "Python 3",
-	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/python:1-3.10-bullseye"
+	"name": "Existing Docker Compose (Extend)",
 
-	// Features to add to the dev container. More info: https://containers.dev/features.
-	// "features": {},
+	// Update the 'dockerComposeFile' list if you have more compose files or use different names.
+	// The .devcontainer/docker-compose.yml file contains any overrides you need/want to make.
+	"dockerComposeFile": [
+		"docker-compose.testing.yml",
+		"docker-compose.yml"
+	],
+
+	// The 'service' property is the name of the service for the container that VS Code should
+	// use. Update this value and .devcontainer/docker-compose.yml to the real service name.
+	"service": "localdev",
+
+	// The optional 'workspaceFolder' property is the path VS Code should open by default when
+	// connected. This is typically a file mount in .devcontainer/docker-compose.yml
+	"workspaceFolder": "/code",
+
+	// Set *default* container specific settings.json values on container create.
+	"settings": {
+		"restructuredtext.languageServer.disabled": true,
+		"python.testing.pytestArgs": [
+			"lib"
+		],
+		"python.testing.unittestEnabled": false,
+		"python.testing.pytestEnabled": true,
+		"python.formatting.provider": "black",
+		"python.sortImports.args": [
+			"--profile", "black"
+		],
+		"editor.formatOnType": true,
+		"editor.formatOnSave": true,
+  		"python.formatting.blackPath": "/usr/bin/black"
+	},
+
+	// Add the IDs of extensions you want installed when the container is created.
+	"extensions": [
+		"aaron-bond.better-comments",
+		"akamud.vscode-theme-onelight",
+		"alefragnani.Bookmarks",
+		"batisteo.vscode-django",
+		"cssho.vscode-svgviewer",
+		"Dart-Code.dart-code",
+		"DavidAnson.vscode-markdownlint",
+		"donjayamanne.python-environment-manager",
+		"donjayamanne.python-extension-pack",
+		"eamodio.gitlens",
+		"EFanZh.graphviz-preview",
+		"esbenp.prettier-vscode",
+		"GitHub.github-vscode-theme",
+		"guyskk.language-cython",
+		"Hyzeta.vscode-theme-github-light",
+		"jebbs.plantuml",
+		"joaompinto.vscode-graphviz",
+		"KevinRose.vsc-python-indent",
+		"lextudio.restructuredtext",
+		"luveti.kconfig",
+		"mechatroner.rainbow-csv",
+		"ms-azuretools.vscode-docker",
+		"ms-python.python",
+		"ms-python.vscode-pylance",
+		"ms-toolsai.jupyter",
+		"ms-vscode-remote.remote-containers",
+		"ms-vscode.sublime-keybindings",
+		"msjsdiag.vscode-react-native",
+		"njpwerner.autodocstring",
+		"redhat.vscode-yaml",
+		"rust-lang.rust",
+		"skyapps.fish-vscode",
+		"streetsidesoftware.code-spell-checker",
+		"tht13.python",
+		"timonwong.shellcheck",
+		"trond-snekvik.simple-rst",
+		"VisualStudioExptTeam.vscodeintellicode",
+		"wholroyd.jinja",
+		"ryanluker.vscode-coverage-gutters",
+		"mongodb.mongodb-vscode",
+	]
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 
-	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "pip3 install --user -r requirements.txt",
+	// Uncomment the next line if you want start specific services in your Docker Compose config.
+	// "runServices": [],
 
-	// Configure tool-specific properties.
-	// "customizations": {},
+	// Uncomment the next line if you want to keep your containers running after VS Code shuts down.
+	// "shutdownAction": "none",
 
-	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "root"
+	// Uncomment the next line to run commands after the container is created - for example installing curl.
+	// "postCreateCommand": "apt-get update && apt-get install -y curl",
+
+	// Uncomment to connect as a non-root user if you've added one. See https://aka.ms/vscode-remote/containers/non-root.
+	// "remoteUser": "vscode"
 }
-
-
-
-// ######################################### Golang #########################################
-
-// {
-//   "name": "Golang Dev Container",
-//   "dockerFile": "Dockerfile.golang",
-//   "service": "golang-dev",
-//   "settings": {
-//     "terminal.integrated.shell.linux": "/bin/bash"
-//   },
-//   "extensions": [
-//     "golang.go"
-//   ],
-//   "remoteUser": "vscode",
-//   "workspaceMount": "source=/path/to/your/repo,target=/workspace,type=bind,consistency=cached",
-//   "workspaceFolder": "/workspace",
-//   "postCreateCommand": "docker exec -u vscode golang-dev go get -u github.com/go-delve/delve/cmd/dlv"
-// }
-
-
-
-// ######################################### Nodejs #########################################
-
-// {
-//   "name": "Basic Node.js",
-//   "build": { "dockerfile": "Dockerfile.nodejs" },
-//   "remoteUser": "node"
-// }
-
-
-
-// ######################################### Multi container using Docker-compose #########################################
-
-// {
-//   "name": "Multi-Container Dev Environment",
-//   "dockerComposeFile": "docker-compose.yml",
-//   "service": "python-dev",
-//   "settings": {
-//     "terminal.integrated.shell.linux": "/bin/bash"
-//   },
-//   "extensions": [
-//     "ms-python.python"
-//   ],
-//  "remoteUser": "vscode",
-//   "workspaceMount": "source=/path/to/your/repo,target=/workspace,type=bind,consistency=cached",
-//   "workspaceFolder": "/workspace",
-//   "forwardPorts": [5000],
-//   "postCreateCommand": "docker exec -u root golang-dev go get -u github.com/go-delve/delve/cmd/dlv"
-// }

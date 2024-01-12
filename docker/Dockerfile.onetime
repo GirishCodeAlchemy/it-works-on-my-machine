@@ -1,0 +1,46 @@
+FROM amazonlinux:2
+
+# Copy mongodb repo file for amazon linux 2
+COPY docker/config/mongodb-org-3.6.repo /etc/yum.repos.d/mongodb-org-3.6.repo
+
+RUN amazon-linux-extras install epel postgresql14 -y \
+    && yum update -y \
+    && yum install -y \
+    hostname \
+    shadow-utils \
+    nc \
+    mongodb-org-shell \
+    mongodb-org-tools \
+    wget \
+    tar \
+    gzip \
+    && yum clean all \
+    && rm -rf /var/cache/yum
+
+# Add girishcodealchemy user
+RUN useradd -d /home/girishcodealchemy -m girishcodealchemy
+RUN mkdir /onetime
+RUN chown girishcodealchemy:girishcodealchemy /onetime
+
+#Mongo related fixtures
+RUN mkdir /mongodump
+RUN wget https://girishcodealchemy/repository/mongodump.tgz -O /mongodump/mongodump.tgz
+RUN tar -zxvf /mongodump/mongodump.tgz -C /mongodump
+
+
+#Postgres related fixtures
+ENV PGPASSWORD=qwerty123
+RUN mkdir /pgdump
+RUN wget https://girishcodealchemy/repository/postgresdump.sql.tgz -O /pgdump/postgresdump.sql.tgz
+RUN tar -xf /pgdump/postgresdump.sql.tgz -C /pgdump
+RUN chown -R girishcodealchemy /pgdump
+
+USER girishcodealchemy
+WORKDIR /home/girishcodealchemy
+
+COPY --chown=girishcodealchemy docker/run/onetime.sh .
+RUN chmod +x onetime.sh
+
+VOLUME /onetime
+
+CMD ./onetime.sh
