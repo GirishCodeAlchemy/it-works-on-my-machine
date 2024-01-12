@@ -1,0 +1,62 @@
+version: "3.7"
+services:
+  postgres:
+    image: postgres:14
+    environment:
+      POSTGRES_PASSWORD: qwerty123
+      PGDATA: /var/lib/postgresql/data/pgdata
+    #user: 1000:1000
+    restart: unless-stopped
+    volumes:
+      - pgdata:/var/lib/postgresql/data/pgdata:rw
+      - ../docker/config/postgresql.conf:/etc/postgresql/postgresql.conf
+    networks:
+      - private-db
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+
+  redis:
+    image: "redis:alpine"
+    networks:
+      - private-db
+
+  mongo_ephemeral:
+    image: "mongo:3.6"
+    command:
+      ["--nojournal", "--storageEngine", "wiredTiger", "--syncdelay", "1800"]
+    networks:
+      - private-db
+
+  elasticsearch:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    networks:
+      - private-db
+
+  pip-compile:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.pipcompile
+    volumes:
+      - .:/code/
+
+  rabbitmq:
+    image: rabbitmq:3.10-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - private-db
+    environment:
+      - RABBITMQ_DEFAULT_USER=test
+      - RABBITMQ_DEFAULT_PASS=test
+
+networks:
+  private-db:
+    driver: bridge
+
+volumes:
+  pgdata:

@@ -1,0 +1,30 @@
+FROM amazonlinux:2
+ENV PIP_INDEX_URL=""
+
+RUN yum update -y \
+    && amazon-linux-extras install epel -y \
+    && yum install -y jemalloc shadow-utils gcc hostname procps pkgconfig \
+    && amazon-linux-extras enable python3 \
+    && yum clean metadata \
+    && yum install -y python3-3.6.* python3-pip-9.0.1-9.* python3-setuptools-36.* python3-wheel-0.30.0a0-6.* python3-devel --disablerepo amzn2-core \
+    && yum clean all \
+    && rm -rf /var/cache/yum
+
+
+#Setup Python3 virtualenv
+RUN python3 -m venv /root/venv \
+    && /root/venv/bin/pip install pip==20.3.4 pip-tools==5.5.0 cython pytest-runner wheel numpy==1.16.2
+ENV PATH="/root/venv/bin/:${PATH}"
+
+RUN mkdir /code/ && mkdir /code/docker && mkdir /code/docker/run
+COPY core /code/core/
+COPY exporter /code/exporter/
+COPY functests /code/functests/
+COPY lib /code/lib/
+COPY server /code/server/
+COPY silhouette /code/silhouette/
+COPY tasklib /code/tasklib/
+COPY zz9 /code/zz9/
+COPY docker/run/ /code/docker/run/
+
+WORKDIR /code/

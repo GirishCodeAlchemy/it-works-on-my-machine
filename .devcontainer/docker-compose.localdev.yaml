@@ -1,0 +1,38 @@
+version: '3'
+services:
+  # Update this to the name of the service you want to work with in your docker-compose.yml file
+    localdev:
+        build:
+            context: .
+            dockerfile: .devcontainer/Dockerfile.localdev
+        extra_hosts:
+            - "local.girishcodealchemy.io:127.0.0.1"
+        image: girishcodealchemy:latest
+        depends_on:
+            - redis
+            - mongo_ephemeral
+            - postgres
+            - elasticsearch
+            - rabbitmq
+        tmpfs:
+            - /tmp
+        volumes:
+            - .:/code/:delegated
+            # Don't mount these paths from the host. This way we don't get
+            # stale/broken information from the host
+            - /code/Docker
+        environment:
+            - MONGODB_HOST=mongo_ephemeral
+            - MONGODB_PORT=27017
+            - ELASTICSEARCH_HOST=elasticsearch
+            - ELASTICSEARCH_PORT=9200
+            - REDIS_HOST=redis
+            - REDIS_PORT=6379
+            - RABBITMQ_URI=amqp://girishcodealchemy:girishcodealchemy@rabbitmq:5672/%2F
+            - CORE_TESTING=1
+        networks:
+            - private-db
+        command: sleep infinity
+
+    testrunner:
+        image: hello-world
